@@ -1,5 +1,8 @@
 defmodule Bank do
-  def handle(data, :start) do
+  @spec start :: {:ok, :exit}
+  def start(), do: handle(%{"total" => 0}, :start)
+
+  defp handle(data, :start) do
     name = IO.gets("Please enter your name?\n") |> String.trim()
     last_name = IO.gets("Please enter your last name?\n") |> String.trim()
     data = data |> Map.put("name", name) |> Map.put("last_name", last_name)
@@ -7,7 +10,7 @@ defmodule Bank do
     handle(data, :menu)
   end
 
-  def handle(%{"last_name" => _, "name" => _, "total" => total} = data, :menu) do
+  defp handle(%{"total" => total} = data, :menu) do
     IO.gets("\nBalance #{total}\nWould you like to?\n1. Deposit\n2. Withdraw\n3. Exit\n> ")
     |> String.trim()
     |> Integer.parse()
@@ -22,35 +25,43 @@ defmodule Bank do
         handle(data, :exit)
 
       _ ->
-        handle(data, :exit)
+        handle(data, :menu)
     end
   end
 
-  def handle(data, :deposit) do
-    {amount, _} = IO.gets("How much to deposit?\n> ") |> String.trim() |> Integer.parse()
-
-    if amount < 0 do
-      IO.puts("The amount must be higher than 0!")
-      handle(data, :menu)
+  defp handle(data, :deposit) do
+    with {amount, _} <- IO.gets("How much to deposit?\n> ") |> String.trim() |> Integer.parse() do
+      if amount < 0 do
+        IO.puts("The amount must be higher than 0!")
+        handle(data, :menu)
+      else
+        data = data |> Map.update("total", 0, fn prev -> prev + amount end)
+        handle(data, :menu)
+      end
     else
-      data = data |> Map.update("total", 0, fn prev -> prev + amount end)
-      handle(data, :menu)
+      _ ->
+        IO.puts("Invalid input")
+        handle(data, :deposit)
     end
   end
 
-  def handle(%{"total" => total} = data, :withdraw) do
-    {amount, _} = IO.gets("How much to withdraw?\n> ") |> String.trim() |> Integer.parse()
-
-    if amount < 0 or amount > total do
-      IO.puts("The amount must be higher than 0 and lower than #{total}!")
-      handle(data, :menu)
+  defp handle(%{"total" => total} = data, :withdraw) do
+    with {amount, _} <- IO.gets("How much to withdraw?\n> ") |> String.trim() |> Integer.parse() do
+      if amount < 0 or amount > total do
+        IO.puts("The amount must be higher than 0 and lower than #{total}!")
+        handle(data, :menu)
+      else
+        data = data |> Map.update("total", 0, fn prev -> prev - amount end)
+        handle(data, :menu)
+      end
     else
-      data = data |> Map.update("total", 0, fn prev -> prev - amount end)
-      handle(data, :menu)
+      _ ->
+        IO.puts("Invalid input")
+        handle(data, :withdraw)
     end
   end
 
-  def handle(data, :exit) do
+  defp handle(data, :exit) do
     data |> tap(&IO.inspect(&1, label: "💵"))
     {:ok, :exit}
   end

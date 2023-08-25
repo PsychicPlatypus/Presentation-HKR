@@ -27,15 +27,19 @@ defmodule Bank do
   end
 
   def handle(data, :deposit) do
-    {amount, _} = IO.gets("How much to deposit?\n> ") |> String.trim() |> Integer.parse()
-
-    if amount < 0 do
-      IO.puts("The amount must be higher than 0!")
-      handle(data, :menu)
+    with {amount, _} <- IO.gets("How much to deposit?\n> ") |> String.trim() |> Integer.parse() do
+      if amount < 0 do
+        IO.puts("The amount must be higher than 0!")
+        handle(data, :menu)
+      else
+        data = data |> Map.update("total", 0, fn prev -> prev + amount end)
+        handle(data, :menu)
+      end
     else
-      data = data |> Map.update("total", 0, fn prev -> prev + amount end)
-      handle(data, :menu)
-    end
+      _ ->
+        IO.puts("Invalid input")
+        handle(data, :menu)
+      end
   end
 
   def handle(%{"total" => total} = data, :withdraw) do

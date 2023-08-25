@@ -55,3 +55,6 @@ defmodule Bank do
     {:ok, :exit}
   end
 end
+
+
+Bank.handle(%{"total" => 0}, :start)

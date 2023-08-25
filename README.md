@@ -1,6 +1,10 @@
 # Presentation
 
-**TODO: Add description**
+To run
+
+```zsh
+    iex -S mix
+```
 
 ## Installation
 

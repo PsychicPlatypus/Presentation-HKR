@@ -1,3 +1,46 @@
+"""
+ Mutability Example: Bad Default arguments
+"""
+
+
+def append_to_list(value, my_list=[]):
+    my_list.append(value)
+    return my_list
+
+
+result1 = append_to_list(1)
+result2 = append_to_list(2)
+
+print(result1)  # Output: [1, 2]
+print(result2)  # Output: [1, 2]
+
+
+# Using mutable list (bad practice)
+def modify_list_bad(numbers):
+    numbers.append(10)
+    return numbers
+
+
+original_list = [1, 2, 3]
+modified_list = modify_list_bad(original_list)
+
+print(original_list)  # Output: [1, 2, 3, 10]
+print(modified_list)  # Output: [1, 2, 3, 10]
+
+
+# Using immutable tuple (good practice)
+def modify_tuple_good(numbers):
+    numbers = numbers + (10,)
+    return numbers
+
+
+original_tuple = (1, 2, 3)
+modified_tuple = modify_tuple_good(original_tuple)
+
+print(original_tuple)  # Output: (1, 2, 3)
+print(modified_tuple)  # Output: (1, 2, 3, 10)
+
+
 class Person:
     def __init__(self, name, age):
         self.name = name
@@ -16,6 +59,7 @@ def pattern_matching_example(value):
             return "Other"
 
 
+# Write live
 def advanced_pattern_matching_example(obj):
     match obj:
         case 0:

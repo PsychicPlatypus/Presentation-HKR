@@ -91,3 +91,5 @@ print(result2)  # Output: "List with elements 1 and 2"
 print(result3)  # Output: "Dictionary with key 'key' and value value"
 print(result4)  # Output: "Person named Alice, aged 25"
 print(result5)  # Output: "Person named Bob, aged 30 (adult)"
+
+anon = lambda x: x + 1

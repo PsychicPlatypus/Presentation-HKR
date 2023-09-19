@@ -40,6 +40,10 @@ modified_tuple = modify_tuple_good(original_tuple)
 print(original_tuple)  # Output: (1, 2, 3)
 print(modified_tuple)  # Output: (1, 2, 3, 10)
 
+"""
+Pattern Matching examples
+"""
+
 
 class Person:
     def __init__(self, name, age):
